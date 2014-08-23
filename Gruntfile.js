@@ -45,6 +45,7 @@ module.exports = function(grunt) {
     jshint: {
       files: [
         // Add filespec list here
+        'Gruntfile.js', 'public/**/*.js', 'test/**/*.js'
       ],
       options: {
         force: 'true',
@@ -118,13 +119,20 @@ module.exports = function(grunt) {
   // Main grunt tasks
   ////////////////////////////////////////////////////
 
-  grunt.registerTask('default', ['concat']);
+  grunt.registerTask('default', [
+  ]);
 
   grunt.registerTask('test', [
+    'jshint',
     'mochaTest'
   ]);
 
-  grunt.registerTask('build', ['concat', 'uglify', 'cssmin']);
+  grunt.registerTask('build', [
+    'test',
+    'concat',
+    'uglify',
+    'cssmin'
+  ]);
 
   grunt.registerTask('upload', function(n) {
     if(grunt.option('prod')) {
