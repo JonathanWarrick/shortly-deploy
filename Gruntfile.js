@@ -3,6 +3,13 @@ module.exports = function(grunt) {
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
     concat: {
+      options: {
+        separator: ';'
+      },
+      dist: {
+        src: 'public/client/*.js',
+        dest: '.tmp/<%= pkg.name %>.js'
+      }
     },
 
     mochaTest: {
@@ -21,6 +28,18 @@ module.exports = function(grunt) {
     },
 
     uglify: {
+      options: {
+        banner: '/*! <%= pkg.name %> <%= grunt.template.today("dd-mm-yyyy") %> */\n'
+      },
+      dist: {
+        files: {
+          'public/dist/<%= pkg.name %>.min.js': '<%= concat.dist.dest %>',
+          'public/dist/backbone.min.js': 'public/lib/backbone.js',
+          'public/dist/handlebars.min.js': 'public/lib/handlebars.js',
+          'public/dist/jquery.min.js': 'public/lib/jquery.js',
+          'public/dist/underscore.min.js': 'public/lib/underscore.js'
+        }
+      }
     },
 
     jshint: {
@@ -38,6 +57,14 @@ module.exports = function(grunt) {
     },
 
     cssmin: {
+      options: {
+        banner: '/*! <%= pkg.name %> <%= grunt.template.today("dd-mm-yyyy") %> */\n'
+      },
+      dist: {
+        files: {
+          'public/dist/style.min.css': 'public/style.css'
+        }
+      }
     },
 
     watch: {
@@ -71,6 +98,8 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-mocha-test');
   grunt.loadNpmTasks('grunt-shell');
   grunt.loadNpmTasks('grunt-nodemon');
+  grunt.loadNpmTasks('grunt-filerev');
+  grunt.loadNpmTasks('grunt-usemin');
 
   grunt.registerTask('server-dev', function (target) {
     // Running nodejs in a different process and displaying output on the main console
@@ -89,12 +118,13 @@ module.exports = function(grunt) {
   // Main grunt tasks
   ////////////////////////////////////////////////////
 
+  grunt.registerTask('default', ['concat']);
+
   grunt.registerTask('test', [
     'mochaTest'
   ]);
 
-  grunt.registerTask('build', [
-  ]);
+  grunt.registerTask('build', ['concat', 'uglify', 'cssmin']);
 
   grunt.registerTask('upload', function(n) {
     if(grunt.option('prod')) {
