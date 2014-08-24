@@ -1,7 +1,7 @@
 var bcrypt = require('bcrypt');
 var mongoose = require('mongoose');
-var db = require('../config');
 var Q = require('q');
+var db = require('../config');
 
 // static salt
 var SALT_WORK_FACTOR = 10;
@@ -61,5 +61,3 @@ var User = mongoose.model('User', UserSchema);
 
 // export for use in handler functions
 module.exports = User;
-
-
